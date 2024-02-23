@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"sync"
 	"time"
+	"strings"
 )
 
 const (
@@ -98,7 +99,16 @@ func main() {
 				fmt.Fprintf(os.Stderr, "failed to save file: %s\n", err)
 			}
 
-			line := fmt.Sprintf("%s %s (%s)\n", path, res.request.URL(), res.status)
+
+			var lenght string = ""
+
+			for _, s := range res.headers {
+				if (strings.HasPrefix(s, "Content-Length")) {
+					lenght = strings.Split(s, ": ")[1]
+				}
+			}
+
+			line := fmt.Sprintf("%s %s (%s) %s\n", path, res.request.URL(), res.status, lenght)
 			fmt.Fprintf(index, "%s", line)
 			if c.verbose {
 				fmt.Printf("%s", line)
